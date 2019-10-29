@@ -22,17 +22,20 @@ namespace PreBuiltConfigExample.Logging.Loud
             try
             {
                 new HostBuilder()
+                    .ConfigureAppConfiguration(config =>
+                    {
+                        config.AddConfiguration(builtConfig);
+                    })
                     .ConfigureLogging(logging =>
                     {
                         logging.AddSerilog();
                     })
-                    .ConfigureAppConfiguration(config =>
+                    .ConfigureServices(_ =>
                     {
                         // Throw an example exception
                         // In reality this could be any exception from anywhere within Host.Build()
                         // Exception will be logged with Serilog
                         throw new ApplicationException("Oh no, it broke!");
-                        config.AddConfiguration(builtConfig);
                     })
                     .Build()
                     .Run();

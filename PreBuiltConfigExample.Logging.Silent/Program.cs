@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 
@@ -9,6 +10,11 @@ namespace PreBuiltConfigExample.Logging.Silent
         public static void Main(string[] args)
         {
             new HostBuilder()
+                .ConfigureAppConfiguration(config =>
+                {
+                    config.AddJsonFile("appsettings.json");
+                    config.AddCommandLine(args);
+                })
                 .ConfigureLogging((context, logging) =>
                 {
                     logging.AddSerilog(
@@ -18,7 +24,7 @@ namespace PreBuiltConfigExample.Logging.Silent
                             .CreateLogger()
                     );
                 })
-                .ConfigureAppConfiguration(config =>
+                .ConfigureServices(_ =>
                 {
                     // Throw an example exception
                     // In reality this could be any exception from anywhere within Host.Build()
